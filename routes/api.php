@@ -18,6 +18,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/universes', [UniverseController::class, 'index']);
     Route::get('/universes/{universe}', [UniverseController::class, 'show']);
     Route::post('/universes', [UniverseController::class, 'store']);
+    Route::put('/universes/{universe}', [UniverseController::class, 'update']);
+    Route::delete('/universes/{universe}', [UniverseController::class, 'destroy']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
