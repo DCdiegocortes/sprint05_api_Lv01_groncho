@@ -15,6 +15,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
 
+    Route::get('/universes', [UniverseController::class, 'index']);
+    Route::get('/universes/{universe}', [UniverseController::class, 'show']);
     Route::post('/universes', [UniverseController::class, 'store']);
 
     Route::middleware('admin')->group(function () {
