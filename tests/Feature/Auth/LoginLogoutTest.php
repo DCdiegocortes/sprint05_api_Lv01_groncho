@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
@@ -88,6 +89,12 @@ class LoginLogoutTest extends TestCase
         $this->withHeader('Authorization', "Bearer {$token}")
             ->postJson('/api/logout')
             ->assertStatus(200);
+
+        // The auth guard memoizes the resolved user for the lifetime of the
+        // app instance, which testing reuses across calls within one test.
+        // Forget it so the second call re-validates the (now revoked) token
+        // instead of reusing the first call's cached authenticated user.
+        Auth::forgetGuards();
 
         $response = $this->withHeader('Authorization', "Bearer {$token}")
             ->postJson('/api/logout');
