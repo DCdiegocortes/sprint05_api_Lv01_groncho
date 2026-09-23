@@ -4,6 +4,7 @@ namespace Tests\Feature\Swipes;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
 
@@ -95,6 +96,11 @@ class SwipeTest extends TestCase
 
         $this->assertDatabaseCount('matches', 0);
 
+        // The auth guard memoizes the resolved user for the app instance's
+        // lifetime, which testing reuses across calls in one test. Forget it
+        // so this second call authenticates as userB, not the cached userA.
+        Auth::forgetGuards();
+
         $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($userB))
             ->postJson('/api/swipes', ['target_user_id' => $userA->id, 'liked' => true])
             ->assertStatus(201);
@@ -120,11 +126,16 @@ class SwipeTest extends TestCase
         $userB = User::factory()->create();
 
         $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($userA))
-            ->postJson('/api/swipes', ['target_user_id' => $userB->id, 'liked' => false]);
+            ->postJson('/api/swipes', ['target_user_id' => $userB->id, 'liked' => false])
+            ->assertStatus(201);
+
+        Auth::forgetGuards();
 
         $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($userB))
-            ->postJson('/api/swipes', ['target_user_id' => $userA->id, 'liked' => false]);
+            ->postJson('/api/swipes', ['target_user_id' => $userA->id, 'liked' => false])
+            ->assertStatus(201);
 
+        $this->assertDatabaseCount('swipes', 2);
         $this->assertDatabaseCount('matches', 0);
     }
 }
