@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ItemStatus;
 use App\Http\Requests\Items\StoreItemRequest;
+use App\Http\Requests\Items\UpdateItemRequest;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -37,5 +38,21 @@ class ItemController extends Controller
         ]);
 
         return response()->json($item, 201);
+    }
+
+    public function update(UpdateItemRequest $request, Item $item)
+    {
+        $item->update($request->only(['name', 'description', 'size']));
+
+        return response()->json($item->fresh());
+    }
+
+    public function destroy(Item $item)
+    {
+        Gate::authorize('delete', $item);
+
+        $item->delete();
+
+        return response()->json(['message' => 'Item deleted'], 200);
     }
 }
