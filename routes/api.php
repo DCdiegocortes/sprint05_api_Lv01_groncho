@@ -26,6 +26,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/universes/{universe}/images', [UniverseImageController::class, 'store']);
     Route::delete('/universes/{universe}/images/{image}', [UniverseImageController::class, 'destroy']);
 
+    Route::get('/items', [ItemController::class, 'index']);
+    Route::get('/items/{item}', [ItemController::class, 'show']);
     Route::post('/items', [ItemController::class, 'store']);
 
     Route::middleware('admin')->group(function () {
