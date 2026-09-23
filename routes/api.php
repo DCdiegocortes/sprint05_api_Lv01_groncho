@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
+use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniverseController;
 use App\Http\Controllers\UniverseImageController;
@@ -31,6 +32,9 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/items', [ItemController::class, 'store']);
     Route::put('/items/{item}', [ItemController::class, 'update']);
     Route::delete('/items/{item}', [ItemController::class, 'destroy']);
+
+    Route::post('/items/{item}/images', [ItemImageController::class, 'store']);
+    Route::delete('/items/{item}/images/{image}', [ItemImageController::class, 'destroy']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
