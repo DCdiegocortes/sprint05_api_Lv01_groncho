@@ -21,4 +21,9 @@ class ItemPolicy
     {
         return $this->view($user, $item);
     }
+
+    public function uploadImages(User $user, Item $item): bool
+    {
+        return $user->id === $item->user_id;
+    }
 }
