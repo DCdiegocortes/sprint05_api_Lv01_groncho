@@ -16,4 +16,9 @@ class UniversePolicy
     {
         return $this->update($user, $universe);
     }
+
+    public function uploadImages(User $user, Universe $universe): bool
+    {
+        return $user->id === $universe->user_id;
+    }
 }
