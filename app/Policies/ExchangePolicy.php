@@ -18,4 +18,9 @@ class ExchangePolicy
     {
         return $user->role === 'admin' || $user->id === $exchange->requestedItem->user_id;
     }
+
+    public function cancel(User $user, Exchange $exchange): bool
+    {
+        return $user->role === 'admin' || $user->id === $exchange->requester_id;
+    }
 }
