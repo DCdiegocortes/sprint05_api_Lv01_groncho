@@ -47,6 +47,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/exchanges', [ExchangeController::class, 'index']);
     Route::get('/exchanges/{exchange}', [ExchangeController::class, 'show']);
     Route::post('/exchanges', [ExchangeController::class, 'store']);
+    Route::put('/exchanges/{exchange}', [ExchangeController::class, 'update']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
