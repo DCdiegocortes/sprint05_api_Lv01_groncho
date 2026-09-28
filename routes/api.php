@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UniverseController;
 use App\Http\Controllers\UniverseImageController;
 use App\Http\Controllers\UserController;
@@ -35,6 +36,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/items/{item}/images', [ItemImageController::class, 'store']);
     Route::delete('/items/{item}/images/{image}', [ItemImageController::class, 'destroy']);
+
+    Route::post('/swipes', [SwipeController::class, 'store']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
