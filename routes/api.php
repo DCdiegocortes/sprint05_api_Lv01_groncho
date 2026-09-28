@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
+use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UniverseController;
@@ -38,6 +39,9 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/items/{item}/images/{image}', [ItemImageController::class, 'destroy']);
 
     Route::post('/swipes', [SwipeController::class, 'store']);
+
+    Route::get('/matches', [MatchController::class, 'index']);
+    Route::delete('/matches/{match}', [MatchController::class, 'destroy']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
