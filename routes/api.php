@@ -44,6 +44,8 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/matches', [MatchController::class, 'index']);
     Route::delete('/matches/{match}', [MatchController::class, 'destroy']);
 
+    Route::get('/exchanges', [ExchangeController::class, 'index']);
+    Route::get('/exchanges/{exchange}', [ExchangeController::class, 'show']);
     Route::post('/exchanges', [ExchangeController::class, 'store']);
 
     Route::middleware('admin')->group(function () {
