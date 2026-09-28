@@ -61,4 +61,15 @@ class ExchangeController extends Controller
 
         return response()->json($exchange->fresh());
     }
+
+    public function destroy(Exchange $exchange)
+    {
+        Gate::authorize('cancel', $exchange);
+
+        abort_if($exchange->status === ExchangeStatus::FINISHED, 422, 'Cannot cancel a finished exchange.');
+
+        $exchange->delete();
+
+        return response()->json(['message' => 'Exchange cancelled'], 200);
+    }
 }
