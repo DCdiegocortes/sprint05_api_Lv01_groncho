@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\MatchController;
@@ -42,6 +43,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/matches', [MatchController::class, 'index']);
     Route::delete('/matches/{match}', [MatchController::class, 'destroy']);
+
+    Route::post('/exchanges', [ExchangeController::class, 'store']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
