@@ -6,6 +6,7 @@ use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\MatchController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RankingController;
 use App\Http\Controllers\SwipeController;
 use App\Http\Controllers\UniverseController;
 use App\Http\Controllers\UniverseImageController;
@@ -30,6 +31,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/universes/{universe}/images', [UniverseImageController::class, 'store']);
     Route::delete('/universes/{universe}/images/{image}', [UniverseImageController::class, 'destroy']);
 
+    Route::get('/items/ranking', [RankingController::class, 'items']);
+
     Route::get('/items', [ItemController::class, 'index']);
     Route::get('/items/{item}', [ItemController::class, 'show']);
     Route::post('/items', [ItemController::class, 'store']);
@@ -49,6 +52,10 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/exchanges', [ExchangeController::class, 'store']);
     Route::put('/exchanges/{exchange}', [ExchangeController::class, 'update']);
     Route::delete('/exchanges/{exchange}', [ExchangeController::class, 'destroy']);
+
+    Route::get('/users/ranking', [RankingController::class, 'users']);
+    Route::get('/users/ranking/best', [RankingController::class, 'usersBest']);
+    Route::get('/users/ranking/worst', [RankingController::class, 'usersWorst']);
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
