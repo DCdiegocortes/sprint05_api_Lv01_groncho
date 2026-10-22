@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Exchanges;
 
 use App\Enums\ItemStatus;
+use App\Enums\MatchStatus;
 use App\Models\Item;
 use App\Models\MatchModel;
 use App\Services\ExchangeService;
@@ -37,6 +38,12 @@ class StoreExchangeRequest extends FormRequest
 
             if ($match && ! $match->involves($this->user())) {
                 $validator->errors()->add('match_id', 'You are not part of this match.');
+
+                return;
+            }
+
+            if ($match && $match->status !== MatchStatus::ACTIVE) {
+                $validator->errors()->add('match_id', 'This match is closed.');
 
                 return;
             }
