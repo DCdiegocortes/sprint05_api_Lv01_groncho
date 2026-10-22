@@ -41,8 +41,14 @@ class StoreExchangeRequest extends FormRequest
                 return;
             }
 
-            if ($match && $requestedItem && $requestedItem->user_id === $this->user()->id) {
-                $validator->errors()->add('requested_item_id', 'You cannot request your own item.');
+            if ($match && $requestedItem) {
+                $matchPartnerId = $match->user_one_id === $this->user()->id
+                    ? $match->user_two_id
+                    : $match->user_one_id;
+
+                if ($requestedItem->user_id !== $matchPartnerId) {
+                    $validator->errors()->add('requested_item_id', 'This item does not belong to your match partner.');
+                }
             }
 
             if ($requestedItem && $requestedItem->status !== ItemStatus::AVAILABLE) {

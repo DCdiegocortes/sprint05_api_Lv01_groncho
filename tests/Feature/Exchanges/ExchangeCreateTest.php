@@ -112,6 +112,21 @@ class ExchangeCreateTest extends TestCase
         $response->assertStatus(422);
     }
 
+    public function test_requested_item_must_belong_to_the_match_partner_not_a_third_party(): void
+    {
+        [$requester, $owner, $match] = $this->matchedPair();
+        $thirdPartyItem = Item::factory()->create();
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($requester))
+            ->postJson('/api/exchanges', [
+                'match_id' => $match->id,
+                'requested_item_id' => $thirdPartyItem->id,
+                'type' => 'GIFT',
+            ]);
+
+        $response->assertStatus(422);
+    }
+
     public function test_offered_item_must_belong_to_requester(): void
     {
         [$requester, $owner, $match] = $this->matchedPair();
