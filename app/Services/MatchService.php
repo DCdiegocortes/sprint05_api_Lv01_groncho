@@ -23,10 +23,9 @@ class MatchService
         $userOneId = min($swiper->id, $target->id);
         $userTwoId = max($swiper->id, $target->id);
 
-        return MatchModel::create([
-            'user_one_id' => $userOneId,
-            'user_two_id' => $userTwoId,
-            'status' => MatchStatus::ACTIVE,
-        ]);
+        return MatchModel::createOrFirst(
+            ['user_one_id' => $userOneId, 'user_two_id' => $userTwoId],
+            ['status' => MatchStatus::ACTIVE],
+        );
     }
 }
