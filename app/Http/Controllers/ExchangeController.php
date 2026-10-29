@@ -55,8 +55,13 @@ class ExchangeController extends Controller
     {
         $exchange->update(['status' => $request->status]);
 
+        if ($exchange->status === ExchangeStatus::ACCEPTED) {
+            $this->exchangeService->lockItems($exchange);
+        }
+
         if ($exchange->status === ExchangeStatus::FINISHED) {
             $this->exchangeService->transferOwnership($exchange);
+            $this->exchangeService->releaseItems($exchange);
         }
 
         return response()->json($exchange->fresh());
@@ -67,6 +72,10 @@ class ExchangeController extends Controller
         Gate::authorize('cancel', $exchange);
 
         abort_if($exchange->status === ExchangeStatus::FINISHED, 422, 'Cannot cancel a finished exchange.');
+
+        if ($exchange->status === ExchangeStatus::ACCEPTED) {
+            $this->exchangeService->releaseItems($exchange);
+        }
 
         $exchange->delete();
 
