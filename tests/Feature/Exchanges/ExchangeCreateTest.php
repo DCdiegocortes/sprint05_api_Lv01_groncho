@@ -3,6 +3,7 @@
 namespace Tests\Feature\Exchanges;
 
 use App\Enums\ExchangeStatus;
+use App\Enums\MatchStatus;
 use App\Models\Item;
 use App\Models\MatchModel;
 use App\Models\User;
@@ -190,6 +191,23 @@ class ExchangeCreateTest extends TestCase
             ]);
 
         $response->assertStatus(422);
+    }
+
+    public function test_cannot_request_exchange_on_a_closed_match(): void
+    {
+        [$requester, $owner, $match] = $this->matchedPair();
+        $match->update(['status' => MatchStatus::CLOSED]);
+        $requestedItem = Item::factory()->create(['user_id' => $owner->id]);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($requester))
+            ->postJson('/api/exchanges', [
+                'match_id' => $match->id,
+                'requested_item_id' => $requestedItem->id,
+                'type' => 'GIFT',
+            ]);
+
+        $response->assertStatus(422);
+        $this->assertDatabaseCount('exchanges', 0);
     }
 
     public function test_requested_item_must_be_available(): void
