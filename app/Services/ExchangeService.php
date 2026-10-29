@@ -4,11 +4,37 @@ namespace App\Services;
 
 use App\Enums\ExchangeStatus;
 use App\Enums\ExchangeType;
+use App\Enums\ItemStatus;
 use App\Models\Exchange;
+use App\Models\Item;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class ExchangeService
 {
+    public function lockItems(Exchange $exchange): void
+    {
+        $itemIds = $this->involvedItemIds($exchange);
+
+        DB::transaction(function () use ($exchange, $itemIds) {
+            Item::whereIn('id', $itemIds)->update(['status' => ItemStatus::UNAVAILABLE->value]);
+
+            Exchange::where('status', ExchangeStatus::PENDING->value)
+                ->where('id', '!=', $exchange->id)
+                ->where(function ($query) use ($itemIds) {
+                    $query->whereIn('requested_item_id', $itemIds)
+                        ->orWhereIn('offered_item_id', $itemIds);
+                })
+                ->update(['status' => ExchangeStatus::REJECTED->value]);
+        });
+    }
+
+    public function releaseItems(Exchange $exchange): void
+    {
+        Item::whereIn('id', $this->involvedItemIds($exchange))
+            ->update(['status' => ItemStatus::AVAILABLE->value]);
+    }
+
     public function transferOwnership(Exchange $exchange): void
     {
         $originalOwnerId = $exchange->requestedItem->user_id;
@@ -35,5 +61,10 @@ class ExchangeService
             ->count();
 
         return ($received - $given) > 2;
+    }
+
+    private function involvedItemIds(Exchange $exchange): array
+    {
+        return array_filter([$exchange->requested_item_id, $exchange->offered_item_id]);
     }
 }
