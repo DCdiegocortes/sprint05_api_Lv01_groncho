@@ -2,6 +2,8 @@
 
 namespace Tests\Feature\Swipes;
 
+use App\Models\MatchModel;
+use App\Models\Swipe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
@@ -137,5 +139,28 @@ class SwipeTest extends TestCase
 
         $this->assertDatabaseCount('swipes', 2);
         $this->assertDatabaseCount('matches', 0);
+    }
+
+    public function test_mutual_like_does_not_fail_when_the_match_already_exists(): void
+    {
+        $userA = User::factory()->create();
+        $userB = User::factory()->create();
+
+        Swipe::factory()->create([
+            'swiper_user_id' => $userA->id,
+            'target_user_id' => $userB->id,
+            'liked' => true,
+        ]);
+        MatchModel::factory()->create([
+            'user_one_id' => min($userA->id, $userB->id),
+            'user_two_id' => max($userA->id, $userB->id),
+        ]);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($userB))
+            ->postJson('/api/swipes', ['target_user_id' => $userA->id, 'liked' => true]);
+
+        $response->assertStatus(201);
+        $this->assertDatabaseCount('swipes', 2);
+        $this->assertDatabaseCount('matches', 1);
     }
 }
