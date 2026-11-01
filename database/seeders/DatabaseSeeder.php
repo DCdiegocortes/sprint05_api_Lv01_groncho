@@ -9,16 +9,21 @@ class DatabaseSeeder extends Seeder
 {
     use WithoutModelEvents;
 
+    private const DEMO_ENVIRONMENTS = ['local', 'testing'];
+
     public function run(): void
     {
-        $this->call([
-            AdminSeeder::class,
-            UserSeeder::class,
-            UniverseSeeder::class,
-            ItemSeeder::class,
-            SwipeSeeder::class,
-            MatchSeeder::class,
-            ExchangeSeeder::class,
-        ]);
+        $this->call(AdminSeeder::class);
+
+        if (app()->environment(self::DEMO_ENVIRONMENTS)) {
+            $this->call([
+                UserSeeder::class,
+                UniverseSeeder::class,
+                ItemSeeder::class,
+                SwipeSeeder::class,
+                MatchSeeder::class,
+                ExchangeSeeder::class,
+            ]);
+        }
     }
 }
