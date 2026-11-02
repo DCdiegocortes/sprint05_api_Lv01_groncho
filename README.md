@@ -1,5 +1,6 @@
 # Grôncho API
-REST API for Grôncho, a money-free clothing swap app (swipe → match → exchange). Swipe on people, match, and exchange garments - no money involved.
+
+**Description**: REST API for Grôncho, a money-free clothing swap app (swipe → match → exchange). Swipe on people, match, and exchange garments — no money involved.
 
 <p align="center">
   <img alt="Laravel" src="https://img.shields.io/badge/LARAVEL-13-FF2D78?style=for-the-badge&labelColor=111110">
@@ -67,6 +68,7 @@ erDiagram
     USERS ||--o{ ITEMS : "owns"
     ITEMS ||--o{ ITEM_IMAGES : "has"
     USERS ||--o{ SWIPES : "gives"
+    USERS ||--o{ SWIPES : "receives"
     USERS ||--o{ MATCHES : "takes part in"
     MATCHES ||--o{ EXCHANGES : "contains"
     USERS ||--o{ EXCHANGES : "requests"
@@ -117,6 +119,8 @@ erDiagram
     }
 ```
 
+All tables also carry `created_at` / `updated_at`; `users` additionally has `email_verified_at` and `remember_token`.
+
 | Table | What it stores | Key constraints |
 |---|---|---|
 | `users` | Accounts with a role | `email` unique, `role` defaults to `user` |
@@ -124,7 +128,7 @@ erDiagram
 | `universe_images` / `item_images` | Photo paths | Deleted in cascade with their parent |
 | `items` | Garments offered for swap | Owner changes when an exchange finishes |
 | `swipes` | Like / dislike given to another user | Unique per (swiper, target) pair |
-| `matches` | Mutual likes between two users | Unique pair, smaller user id always stored first |
+| `matches` | Mutual likes between two users | Unique pair; the code stores the smaller user id first |
 | `exchanges` | A request for an item inside a match | Items are protected from deletion while referenced |
 | `oauth_*` | Passport tokens and clients | Managed by Passport |
 
@@ -548,6 +552,5 @@ The project follows **Gitflow**:
 - **No magic values**: statuses and types are native PHP enums cast on the models.
 - **Security**: every route except `register` and `login` requires a Passport token; `user_id`, `role` and `status` are decided by the server; administrators can only be created by a seeder; foreign keys and unique indexes protect the data in the database itself.
 
-## Author
 
 <p align="center"><code>GRÔNCHÔ</code> — Diego Cortes · </p>
