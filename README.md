@@ -60,65 +60,6 @@ The front-end is a separate project that consumes this API.
 
 What the application registers:
 
-```mermaid
-%%{init: {'theme': 'base', 'themeVariables': {'primaryColor': '#EEEEED', 'primaryTextColor': '#111110', 'primaryBorderColor': '#111110', 'lineColor': '#FF2D78', 'fontFamily': 'Inter, sans-serif'}}}%%
-erDiagram
-    USERS ||--o| UNIVERSES : "has one"
-    UNIVERSES ||--o{ UNIVERSE_IMAGES : "has"
-    USERS ||--o{ ITEMS : "owns"
-    ITEMS ||--o{ ITEM_IMAGES : "has"
-    USERS ||--o{ SWIPES : "gives"
-    USERS ||--o{ SWIPES : "receives"
-    USERS ||--o{ MATCHES : "takes part in"
-    MATCHES ||--o{ EXCHANGES : "contains"
-    USERS ||--o{ EXCHANGES : "requests"
-    ITEMS ||--o{ EXCHANGES : "requested / offered"
-
-    USERS {
-        bigint id PK
-        string name
-        string email UK
-        string password
-        enum role "user | admin"
-    }
-    UNIVERSES {
-        bigint id PK
-        bigint user_id FK,UK
-        string name
-        string style
-    }
-    ITEMS {
-        bigint id PK
-        bigint user_id FK
-        string name
-        text description
-        string size
-        enum status "AVAILABLE | UNAVAILABLE"
-    }
-    SWIPES {
-        bigint id PK
-        bigint swiper_user_id FK
-        bigint target_user_id FK
-        boolean liked
-    }
-    MATCHES {
-        bigint id PK
-        bigint user_one_id FK
-        bigint user_two_id FK
-        enum status "ACTIVE | CLOSED"
-    }
-    EXCHANGES {
-        bigint id PK
-        bigint match_id FK
-        bigint requester_id FK
-        bigint requested_item_id FK
-        bigint offered_item_id FK "null for a gift"
-        enum type "TRADE | GIFT"
-        enum status "PENDING | ACCEPTED | REJECTED | FINISHED"
-        string message
-    }
-```
-
 All tables also carry `created_at` / `updated_at`; `users` additionally has `email_verified_at` and `remember_token`.
 
 | Table | What it stores | Key constraints |
