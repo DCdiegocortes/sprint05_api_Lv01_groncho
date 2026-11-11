@@ -1,0 +1,70 @@
+- httpMethods:
+    - PUT
+  uri: api/profile
+  metadata:
+    groupName: Endpoints
+    groupDescription: ''
+    subgroup: ''
+    title: ''
+    description: 'Updates the name and/or the email of the authenticated user. Both fields are optional.'
+    authenticated: true
+  headers:
+    Content-Type: application/json
+    Accept: application/json
+  urlParameters: []
+  queryParameters: []
+  bodyParameters:
+    name:
+      name: name
+      description: 'Must not be greater than 255 characters.'
+      required: false
+      example: Ana
+      type: string
+    email:
+      name: email
+      description: 'Must be a valid email address and not used by another user. Must not be greater than 255 characters.'
+      required: false
+      example: ana@groncho.com
+      type: string
+  responses:
+    - status: 200
+      description: 'Profile updated'
+      content: '{"id":2,"name":"Ana","email":"ana@groncho.com","email_verified_at":null,"role":"user","created_at":"2026-11-01T22:17:28.000000Z","updated_at":"2026-11-01T22:17:28.000000Z"}'
+    - status: 422
+      description: 'The email is already used by another user'
+      content: '{"message":"The email has already been taken.","errors":{"email":["The email has already been taken."]}}'
+- httpMethods:
+    - POST
+  uri: api/swipes
+  metadata:
+    groupName: Endpoints
+    groupDescription: ''
+    subgroup: ''
+    title: ''
+    description: 'Likes or dislikes another user. If that user had already liked you and you like back, a match is created; list your matches with GET /api/matches.'
+    authenticated: true
+  headers:
+    Content-Type: application/json
+    Accept: application/json
+  urlParameters: []
+  queryParameters: []
+  bodyParameters:
+    target_user_id:
+      name: target_user_id
+      description: 'The id of an existing user. It cannot be yourself and you can only swipe on each user once.'
+      required: true
+      example: 3
+      type: integer
+    liked:
+      name: liked
+      description: 'true for a like, false for a dislike.'
+      required: true
+      example: true
+      type: boolean
+  responses:
+    - status: 201
+      description: 'Swipe saved'
+      content: '{"swiper_user_id":2,"target_user_id":3,"liked":true,"updated_at":"2026-11-01T22:17:28.000000Z","created_at":"2026-11-01T22:17:28.000000Z","id":1}'
+    - status: 422
+      description: 'You already swiped on that user'
+      content: '{"message":"The target user id has already been taken.","errors":{"target_user_id":["The target user id has already been taken."]}}'
