@@ -1322,7 +1322,7 @@ endpoints:
         name: status
         description: ''
         required: true
-        example: REJECTED
+        example: FINISHED
         type: string
         enumValues:
           - ACCEPTED
@@ -1332,7 +1332,7 @@ endpoints:
         nullable: false
         deprecated: false
     cleanBodyParameters:
-      status: REJECTED
+      status: FINISHED
     fileParameters: []
     responses: []
     responseFields: []

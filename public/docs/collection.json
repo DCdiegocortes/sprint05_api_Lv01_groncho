@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Gr\u00f4ncho API Documentation",
-        "_postman_id": "6c39e849-ba45-4530-80fc-68f1c1047a5a",
+        "_postman_id": "ff8cf357-37a2-4d99-a35d-97db05531541",
         "description": "REST API for Gr\u00f4ncho, a money-free clothing swap app.",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -796,7 +796,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"status\":\"REJECTED\"}"
+                            "raw": "{\"status\":\"FINISHED\"}"
                         },
                         "description": ""
                     },

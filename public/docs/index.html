@@ -196,10 +196,9 @@
 <aside>
     <strong>Base URL</strong>: <code>http://127.0.0.1:8000</code>
 </aside>
-<pre><code>Swipe on people, match, and exchange garments. Every endpoint except register and login requires a token.
-
-Get a token with `POST /api/login` and send it in every request as `Authorization: Bearer {token}`.
-Send `Accept: application/json` so errors are returned as JSON.</code></pre>
+<p>Swipe on people, match, and exchange garments. Every endpoint except register and login requires a token.</p>
+<p>Get a token with <code>POST /api/login</code> and send it in every request as <code>Authorization: Bearer {token}</code>.
+Send <code>Accept: application/json</code> so errors are returned as JSON.</p>
 
         <h1 id="authenticating-requests">Authenticating requests</h1>
 <p>To authenticate requests, include an <strong><code>Authorization</code></strong> header with the value <strong><code>"Bearer {YOUR_TOKEN}"</code></strong>.</p>
@@ -1555,7 +1554,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_TOKEN}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images[]=@/private/var/folders/hm/btm8k20n5d18ktbkmz6jhls00000gn/T/php494e6hldhs2mcN6uf8F" </code></pre></div>
+    --form "images[]=@/private/var/folders/hm/btm8k20n5d18ktbkmz6jhls00000gn/T/phpntktaomaburifG0iiQj" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -2757,7 +2756,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     --header "Authorization: Bearer {YOUR_TOKEN}" \
     --header "Content-Type: multipart/form-data" \
     --header "Accept: application/json" \
-    --form "images[]=@/private/var/folders/hm/btm8k20n5d18ktbkmz6jhls00000gn/T/phpdrar6ubiuhia52mdQYQ" </code></pre></div>
+    --form "images[]=@/private/var/folders/hm/btm8k20n5d18ktbkmz6jhls00000gn/T/php66rrl680vld08nfSa4s" </code></pre></div>
 
 
 <div class="javascript-example">
@@ -3802,7 +3801,7 @@ Must be one of:
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"status\": \"REJECTED\"
+    \"status\": \"FINISHED\"
 }"
 </code></pre></div>
 
@@ -3819,7 +3818,7 @@ const headers = {
 };
 
 let body = {
-    "status": "REJECTED"
+    "status": "FINISHED"
 };
 
 fetch(url, {
@@ -3936,10 +3935,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="text" style="display: none"
                               name="status"                data-endpoint="PUTapi-exchanges--exchange_id-"
-               value="REJECTED"
+               value="FINISHED"
                data-component="body">
     <br>
-<p>Example: <code>REJECTED</code></p>
+<p>Example: <code>FINISHED</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>ACCEPTED</code></li> <li><code>REJECTED</code></li> <li><code>FINISHED</code></li></ul>
         </div>
