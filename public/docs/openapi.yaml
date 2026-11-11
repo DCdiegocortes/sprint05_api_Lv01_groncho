@@ -1,0 +1,762 @@
+openapi: 3.0.3
+info:
+  title: 'Grôncho API Documentation'
+  description: 'REST API for Grôncho, a money-free clothing swap app.'
+  version: 1.0.0
+servers:
+  -
+    url: 'http://127.0.0.1:8000'
+tags:
+  -
+    name: Endpoints
+    description: ''
+components:
+  securitySchemes:
+    default:
+      type: http
+      scheme: bearer
+      description: 'You can retrieve your token with <code>POST /api/login</code>.'
+security:
+  -
+    default: []
+paths:
+  /api/register:
+    post:
+      summary: ''
+      operationId: postApiRegister
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
+                email:
+                  type: string
+                  description: 'Must be a valid email address. Must not be greater than 255 characters.'
+                  example: zbailey@example.net
+                password:
+                  type: string
+                  description: 'Must be at least 8 characters.'
+                  example: '-0pBNvYgxw'
+              required:
+                - name
+                - email
+                - password
+  /api/login:
+    post:
+      summary: ''
+      operationId: postApiLogin
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: 'Must be a valid email address.'
+                  example: gbailey@example.net
+                password:
+                  type: string
+                  description: ''
+                  example: '|]|{+-'
+              required:
+                - email
+                - password
+  /api/logout:
+    post:
+      summary: ''
+      operationId: postApiLogout
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  /api/profile:
+    get:
+      summary: ''
+      operationId: getApiProfile
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    put:
+      summary: ''
+      operationId: putApiProfile
+      description: 'Updates the name and/or the email of the authenticated user. Both fields are optional.'
+      parameters: []
+      responses:
+        200:
+          description: 'Profile updated'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 2
+                  name: Ana
+                  email: ana@groncho.com
+                  email_verified_at: null
+                  role: user
+                  created_at: '2026-11-01T22:17:28.000000Z'
+                  updated_at: '2026-11-01T22:17:28.000000Z'
+                properties:
+                  id:
+                    type: integer
+                    example: 2
+                  name:
+                    type: string
+                    example: Ana
+                  email:
+                    type: string
+                    example: ana@groncho.com
+                  email_verified_at:
+                    type: string
+                    example: null
+                    nullable: true
+                  role:
+                    type: string
+                    example: user
+                  created_at:
+                    type: string
+                    example: '2026-11-01T22:17:28.000000Z'
+                  updated_at:
+                    type: string
+                    example: '2026-11-01T22:17:28.000000Z'
+        422:
+          description: 'The email is already used by another user'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The email has already been taken.'
+                  errors:
+                    email:
+                      - 'The email has already been taken.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The email has already been taken.'
+                  errors:
+                    type: object
+                    properties:
+                      email:
+                        type: array
+                        example:
+                          - 'The email has already been taken.'
+                        items:
+                          type: string
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: Ana
+                email:
+                  type: string
+                  description: 'Must be a valid email address and not used by another user. Must not be greater than 255 characters.'
+                  example: ana@groncho.com
+  /api/universes:
+    get:
+      summary: ''
+      operationId: getApiUniverses
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    post:
+      summary: ''
+      operationId: postApiUniverses
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
+                style:
+                  type: string
+                  description: 'Must not be greater than 100 characters.'
+                  example: 'n'
+                  nullable: true
+              required:
+                - name
+  '/api/universes/{universe_id}':
+    get:
+      summary: ''
+      operationId: getApiUniversesUniverse_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    put:
+      summary: ''
+      operationId: putApiUniversesUniverse_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
+                style:
+                  type: string
+                  description: 'Must not be greater than 100 characters.'
+                  example: 'n'
+                  nullable: true
+    delete:
+      summary: ''
+      operationId: deleteApiUniversesUniverse_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: universe_id
+        description: 'The ID of the universe.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/universes/{universe_id}/images':
+    post:
+      summary: ''
+      operationId: postApiUniversesUniverse_idImages
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  description: 'Must be an image. Must not be greater than 5120 kilobytes.'
+                  items:
+                    type: string
+                    format: binary
+    parameters:
+      -
+        in: path
+        name: universe_id
+        description: 'The ID of the universe.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/universes/{universe_id}/images/{image_id}':
+    delete:
+      summary: ''
+      operationId: deleteApiUniversesUniverse_idImagesImage_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: universe_id
+        description: 'The ID of the universe.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: image_id
+        description: 'The ID of the image.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  /api/items/ranking:
+    get:
+      summary: ''
+      operationId: getApiItemsRanking
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  /api/items:
+    get:
+      summary: ''
+      operationId: getApiItems
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    post:
+      summary: ''
+      operationId: postApiItems
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
+                description:
+                  type: string
+                  description: ''
+                  example: 'Eius et animi quos velit et.'
+                  nullable: true
+                size:
+                  type: string
+                  description: 'Must not be greater than 20 characters.'
+                  example: vdljnikhwaykcmyu
+                  nullable: true
+              required:
+                - name
+  '/api/items/{item_id}':
+    get:
+      summary: ''
+      operationId: getApiItemsItem_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    put:
+      summary: ''
+      operationId: putApiItemsItem_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
+                description:
+                  type: string
+                  description: ''
+                  example: 'Eius et animi quos velit et.'
+                  nullable: true
+                size:
+                  type: string
+                  description: 'Must not be greater than 20 characters.'
+                  example: vdljnikhwaykcmyu
+                  nullable: true
+    delete:
+      summary: ''
+      operationId: deleteApiItemsItem_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/items/{item_id}/images':
+    post:
+      summary: ''
+      operationId: postApiItemsItem_idImages
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: false
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                images:
+                  type: array
+                  description: 'Must be an image. Must not be greater than 5120 kilobytes.'
+                  items:
+                    type: string
+                    format: binary
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  '/api/items/{item_id}/images/{image_id}':
+    delete:
+      summary: ''
+      operationId: deleteApiItemsItem_idImagesImage_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: item_id
+        description: 'The ID of the item.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+      -
+        in: path
+        name: image_id
+        description: 'The ID of the image.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  /api/matches:
+    get:
+      summary: ''
+      operationId: getApiMatches
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  '/api/matches/{match_id}':
+    delete:
+      summary: ''
+      operationId: deleteApiMatchesMatch_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: match_id
+        description: 'The ID of the match.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  /api/exchanges:
+    get:
+      summary: ''
+      operationId: getApiExchanges
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    post:
+      summary: ''
+      operationId: postApiExchanges
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                match_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                requested_item_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                offered_item_id:
+                  type: integer
+                  description: 'Must match an existing stored value.'
+                  example: 16
+                  nullable: true
+                type:
+                  type: string
+                  description: ''
+                  example: TRADE
+                  enum:
+                    - TRADE
+                    - GIFT
+                message:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: 'n'
+                  nullable: true
+              required:
+                - match_id
+                - requested_item_id
+                - type
+  '/api/exchanges/{exchange_id}':
+    get:
+      summary: ''
+      operationId: getApiExchangesExchange_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    put:
+      summary: ''
+      operationId: putApiExchangesExchange_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  description: ''
+                  example: REJECTED
+                  enum:
+                    - ACCEPTED
+                    - REJECTED
+                    - FINISHED
+              required:
+                - status
+    delete:
+      summary: ''
+      operationId: deleteApiExchangesExchange_id
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: exchange_id
+        description: 'The ID of the exchange.'
+        example: 16
+        required: true
+        schema:
+          type: integer
+  /api/users/ranking:
+    get:
+      summary: ''
+      operationId: getApiUsersRanking
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  /api/users/ranking/best:
+    get:
+      summary: ''
+      operationId: getApiUsersRankingBest
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  /api/users/ranking/worst:
+    get:
+      summary: ''
+      operationId: getApiUsersRankingWorst
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  /api/users:
+    get:
+      summary: ''
+      operationId: getApiUsers
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+  '/api/users/{id}':
+    get:
+      summary: ''
+      operationId: getApiUsersId
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    delete:
+      summary: ''
+      operationId: deleteApiUsersId
+      description: ''
+      parameters: []
+      responses: {}
+      tags:
+        - Endpoints
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: 1
+        required: true
+        schema:
+          type: integer
+  /api/swipes:
+    post:
+      summary: ''
+      operationId: postApiSwipes
+      description: 'Likes or dislikes another user. If that user had already liked you and you like back, a match is created; list your matches with GET /api/matches.'
+      parameters: []
+      responses:
+        201:
+          description: 'Swipe saved'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  swiper_user_id: 2
+                  target_user_id: 3
+                  liked: true
+                  updated_at: '2026-11-01T22:17:28.000000Z'
+                  created_at: '2026-11-01T22:17:28.000000Z'
+                  id: 1
+                properties:
+                  swiper_user_id:
+                    type: integer
+                    example: 2
+                  target_user_id:
+                    type: integer
+                    example: 3
+                  liked:
+                    type: boolean
+                    example: true
+                  updated_at:
+                    type: string
+                    example: '2026-11-01T22:17:28.000000Z'
+                  created_at:
+                    type: string
+                    example: '2026-11-01T22:17:28.000000Z'
+                  id:
+                    type: integer
+                    example: 1
+        422:
+          description: 'You already swiped on that user'
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'The target user id has already been taken.'
+                  errors:
+                    target_user_id:
+                      - 'The target user id has already been taken.'
+                properties:
+                  message:
+                    type: string
+                    example: 'The target user id has already been taken.'
+                  errors:
+                    type: object
+                    properties:
+                      target_user_id:
+                        type: array
+                        example:
+                          - 'The target user id has already been taken.'
+                        items:
+                          type: string
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target_user_id:
+                  type: integer
+                  description: 'The id of an existing user. It cannot be yourself and you can only swipe on each user once.'
+                  example: 3
+                liked:
+                  type: boolean
+                  description: 'true for a like, false for a dislike.'
+                  example: true
+              required:
+                - target_user_id
+                - liked
