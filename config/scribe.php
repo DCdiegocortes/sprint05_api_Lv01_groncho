@@ -17,10 +17,10 @@ return [
 
     // Text to place in the "Introduction" section, right after the `description`. Markdown and HTML are supported.
     'intro_text' => <<<'INTRO'
-            Swipe on people, match, and exchange garments. Every endpoint except register and login requires a token.
+        Swipe on people, match, and exchange garments. Every endpoint except register and login requires a token.
 
-            Get a token with `POST /api/login` and send it in every request as `Authorization: Bearer {token}`.
-            Send `Accept: application/json` so errors are returned as JSON.
+        Get a token with `POST /api/login` and send it in every request as `Authorization: Bearer {token}`.
+        Send `Accept: application/json` so errors are returned as JSON.
         INTRO,
 
     // The base URL displayed in the docs.
