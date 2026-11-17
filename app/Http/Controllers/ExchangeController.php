@@ -23,6 +23,10 @@ class ExchangeController extends Controller
                 ->orWhereHas('requestedItem', function ($query) use ($request) {
                     $query->where('user_id', $request->user()->id);
                 })
+                ->orWhereHas('match', function ($query) use ($request) {
+                    $query->where('user_one_id', $request->user()->id)
+                        ->orWhere('user_two_id', $request->user()->id);
+                })
                 ->get();
         }
 

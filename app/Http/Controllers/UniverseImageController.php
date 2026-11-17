@@ -6,6 +6,7 @@ use App\Http\Requests\Universes\StoreUniverseImagesRequest;
 use App\Models\Universe;
 use App\Models\UniverseImage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class UniverseImageController extends Controller
 {
@@ -26,6 +27,8 @@ class UniverseImageController extends Controller
         Gate::authorize('delete', $universe);
 
         abort_if($image->universe_id !== $universe->id, 404);
+
+        Storage::disk('public')->delete($image->path);
 
         $image->delete();
 

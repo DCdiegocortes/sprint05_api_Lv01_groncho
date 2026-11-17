@@ -11,7 +11,8 @@ class ExchangePolicy
     {
         return $user->role === 'admin'
             || $user->id === $exchange->requester_id
-            || $user->id === $exchange->requestedItem->user_id;
+            || $user->id === $exchange->requestedItem->user_id
+            || $exchange->match->involves($user);
     }
 
     public function respond(User $user, Exchange $exchange): bool

@@ -6,6 +6,7 @@ use App\Http\Requests\Items\StoreItemImagesRequest;
 use App\Models\Item;
 use App\Models\ItemImage;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ItemImageController extends Controller
 {
@@ -26,6 +27,8 @@ class ItemImageController extends Controller
         Gate::authorize('delete', $item);
 
         abort_if($image->item_id !== $item->id, 404);
+
+        Storage::disk('public')->delete($image->path);
 
         $image->delete();
 

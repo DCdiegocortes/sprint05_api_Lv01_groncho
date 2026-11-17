@@ -24,6 +24,10 @@ class UpdateExchangeStatusRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function (Validator $validator) {
+            if ($validator->errors()->isNotEmpty()) {
+                return;
+            }
+
             $exchange = $this->route('exchange');
             $current = $exchange->status;
             $next = ExchangeStatus::from($this->status);
