@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ItemStatus;
 use App\Http\Requests\Items\StoreItemRequest;
 use App\Http\Requests\Items\UpdateItemRequest;
+use App\Models\Exchange;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -50,6 +51,12 @@ class ItemController extends Controller
     public function destroy(Item $item)
     {
         Gate::authorize('delete', $item);
+
+        abort_if(
+            Exchange::where('requested_item_id', $item->id)->orWhere('offered_item_id', $item->id)->exists(),
+            409,
+            'Cannot delete an item that is part of an exchange.'
+        );
 
         $item->delete();
 
