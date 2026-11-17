@@ -18,10 +18,16 @@ class SwipeController extends Controller
             'liked' => $request->liked,
         ]);
 
-        if ($swipe->liked) {
-            $this->matchService->checkForMutualLike($request->user(), $swipe->target);
-        }
+        $match = $swipe->liked
+            ? $this->matchService->checkForMutualLike($request->user(), $swipe->target)
+            : null;
 
-        return response()->json($swipe, 201);
+        $swipe->unsetRelation('target');
+
+        return response()->json([
+            ...$swipe->toArray(),
+            'matched' => $match !== null,
+            'match_id' => $match?->id,
+        ], 201);
     }
 }
