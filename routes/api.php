@@ -45,6 +45,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/swipes', [SwipeController::class, 'store']);
 
     Route::get('/matches', [MatchController::class, 'index']);
+    Route::get('/matches/{match}/items', [MatchController::class, 'items']);
     Route::delete('/matches/{match}', [MatchController::class, 'destroy']);
 
     Route::get('/exchanges', [ExchangeController::class, 'index']);
