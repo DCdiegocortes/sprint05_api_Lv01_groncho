@@ -23,6 +23,7 @@ Route::middleware('auth:api')->group(function () {
     Route::put('/profile', [ProfileController::class, 'update']);
 
     Route::get('/universes', [UniverseController::class, 'index']);
+    Route::get('/universes/feed', [UniverseController::class, 'feed']);
     Route::get('/universes/{universe}', [UniverseController::class, 'show']);
     Route::post('/universes', [UniverseController::class, 'store']);
     Route::put('/universes/{universe}', [UniverseController::class, 'update']);
