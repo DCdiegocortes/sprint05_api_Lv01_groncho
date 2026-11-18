@@ -39,6 +39,11 @@ class UniverseDecorationsTest extends TestCase
         return ['type' => 'EMOJI', 'emoji' => '🖤', 'x' => 70, 'y' => 85, 'size' => 12, ...$overrides];
     }
 
+    private function sticker(array $overrides = []): array
+    {
+        return ['type' => 'STICKER', 'sticker' => 'UFO', 'x' => 40, 'y' => 12, 'size' => 20, ...$overrides];
+    }
+
     private function text(array $overrides = []): array
     {
         return [
@@ -62,6 +67,49 @@ class UniverseDecorationsTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonPath('decorations', [$this->emoji(), $this->text()]);
         $this->assertSame([$this->emoji(), $this->text()], $universe->fresh()->decorations);
+    }
+
+    public function test_the_owner_can_place_any_of_the_eight_stickers(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        foreach (['UFO', 'JP_LETS_SWAP', 'GAME_OVER', 'CD', 'LIFE_HEARTS', 'CARD', 'STAR', 'HEADPHONES'] as $sticker) {
+            $response = $this->saveDecorations($user, $universe, [$this->sticker(['sticker' => $sticker])]);
+
+            $response->assertStatus(200);
+            $response->assertJsonPath('decorations', [$this->sticker(['sticker' => $sticker])]);
+        }
+    }
+
+    public function test_an_unknown_sticker_is_rejected(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        foreach (['HEART', 'NO_MONEY', null] as $sticker) {
+            $response = $this->saveDecorations($user, $universe, [$this->sticker(['sticker' => $sticker])]);
+
+            $response->assertStatus(422);
+            $response->assertJsonValidationErrors('decorations.0.sticker');
+        }
+    }
+
+    public function test_stickers_emojis_and_texts_can_be_mixed(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        $response = $this->saveDecorations($user, $universe, [$this->sticker(), $this->emoji(), $this->text()]);
+
+        $response->assertStatus(200);
+        $this->assertSame([$this->sticker(), $this->emoji(), $this->text()], $universe->fresh()->decorations);
+    }
+
+    public function test_the_suggested_emojis_from_the_design_are_accepted(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        foreach (['🖤', '✨', '🪩', '🥋', '🗡️', '🫀', '🧷', '🌙'] as $emoji) {
+            $this->saveDecorations($user, $universe, [$this->emoji(['emoji' => $emoji])])->assertStatus(200);
+        }
     }
 
     public function test_positions_and_sizes_can_have_decimals(): void
@@ -154,11 +202,11 @@ class UniverseDecorationsTest extends TestCase
         }
     }
 
-    public function test_stickers_and_unknown_types_are_rejected_for_now(): void
+    public function test_unknown_decoration_types_are_rejected(): void
     {
         [$user, $universe] = $this->ownUniverse();
 
-        foreach (['STICKER', 'IMAGE'] as $type) {
+        foreach (['IMAGE', 'VIDEO'] as $type) {
             $response = $this->saveDecorations($user, $universe, [$this->emoji(['type' => $type])]);
 
             $response->assertStatus(422);
@@ -239,10 +287,11 @@ class UniverseDecorationsTest extends TestCase
         $response = $this->saveDecorations($user, $universe, [
             $this->emoji(['font' => 'ITALIANA', 'rotation' => 45]),
             $this->text(['emoji' => '🖤', 'onclick' => 'alert(1)']),
+            $this->sticker(['emoji' => '🖤', 'text' => 'hello', 'color' => 'PINK']),
         ]);
 
         $response->assertStatus(200);
-        $this->assertSame([$this->emoji(), $this->text()], $universe->fresh()->decorations);
+        $this->assertSame([$this->emoji(), $this->text(), $this->sticker()], $universe->fresh()->decorations);
     }
 
     public function test_sending_an_empty_list_removes_every_decoration(): void
