@@ -8,24 +8,29 @@ use App\Enums\ItemStatus;
 use App\Models\Exchange;
 use App\Models\Item;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ExchangeService
 {
-    public function lockItems(Exchange $exchange): void
+    public function lockItems(Exchange $exchange): Collection
     {
         $itemIds = $this->involvedItemIds($exchange);
 
-        DB::transaction(function () use ($exchange, $itemIds) {
+        return DB::transaction(function () use ($exchange, $itemIds) {
             Item::whereIn('id', $itemIds)->update(['status' => ItemStatus::UNAVAILABLE->value]);
 
-            Exchange::where('status', ExchangeStatus::PENDING->value)
+            $declined = Exchange::where('status', ExchangeStatus::PENDING->value)
                 ->where('id', '!=', $exchange->id)
                 ->where(function ($query) use ($itemIds) {
                     $query->whereIn('requested_item_id', $itemIds)
                         ->orWhereIn('offered_item_id', $itemIds);
                 })
-                ->update(['status' => ExchangeStatus::REJECTED->value]);
+                ->get();
+
+            Exchange::whereIn('id', $declined->pluck('id'))->update(['status' => ExchangeStatus::REJECTED->value]);
+
+            return $declined->each(fn (Exchange $declinedExchange) => $declinedExchange->status = ExchangeStatus::REJECTED);
         });
     }
 
