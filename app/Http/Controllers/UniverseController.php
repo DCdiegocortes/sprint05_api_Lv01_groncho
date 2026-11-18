@@ -30,7 +30,7 @@ class UniverseController extends Controller
         $user = $request->user();
         $search = trim((string) $request->query('search', ''));
 
-        $universes = Universe::with(['user:id,name', 'images'])
+        $universes = Universe::with(['user:id,name,avatar', 'images'])
             ->where('user_id', '!=', $user->id)
             ->whereNotIn('user_id', Swipe::where('swiper_user_id', $user->id)->select('target_user_id'))
             ->when($search !== '', function ($query) use ($search) {

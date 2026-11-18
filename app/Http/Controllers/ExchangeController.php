@@ -90,13 +90,13 @@ class ExchangeController extends Controller
     private function relations(): array
     {
         return [
-            'requester:id,name',
+            'requester:id,name,avatar',
             'requestedItem:id,name,size',
             'requestedItem.images',
             'offeredItem:id,name,size',
             'offeredItem.images',
-            'match.userOne:id,name',
-            'match.userTwo:id,name',
+            'match.userOne:id,name,avatar',
+            'match.userTwo:id,name,avatar',
         ];
     }
 
