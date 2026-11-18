@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\ExchangeStatus;
 use App\Enums\MatchStatus;
+use App\Enums\UniverseLayout;
 use App\Http\Requests\Universes\StoreUniverseRequest;
 use App\Http\Requests\Universes\UpdateUniverseRequest;
 use App\Models\Exchange;
@@ -77,6 +78,7 @@ class UniverseController extends Controller
             'name' => $request->name,
             'style' => $request->style,
             'description' => $request->description,
+            'layout' => UniverseLayout::MASONRY,
         ]);
 
         return response()->json($universe, 201);
@@ -84,7 +86,7 @@ class UniverseController extends Controller
 
     public function update(UpdateUniverseRequest $request, Universe $universe)
     {
-        $universe->update($request->only(['name', 'style', 'description']));
+        $universe->update($request->only(['name', 'style', 'description', 'layout']));
 
         return response()->json($universe->fresh());
     }
