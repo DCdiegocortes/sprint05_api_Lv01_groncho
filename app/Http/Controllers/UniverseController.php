@@ -12,6 +12,7 @@ use App\Models\Item;
 use App\Models\MatchModel;
 use App\Models\Swipe;
 use App\Models\Universe;
+use App\Services\SpotifyTrackResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -84,9 +85,17 @@ class UniverseController extends Controller
         return response()->json($universe, 201);
     }
 
-    public function update(UpdateUniverseRequest $request, Universe $universe)
+    public function update(UpdateUniverseRequest $request, Universe $universe, SpotifyTrackResolver $spotify)
     {
-        $universe->update($request->only(['name', 'style', 'description', 'layout']));
+        $data = $request->only(['name', 'style', 'description', 'layout']);
+
+        if ($request->has('spotify_url')) {
+            $data = [...$data, ...($request->spotify_url === null
+                ? ['spotify_track_id' => null, 'spotify_track_title' => null, 'spotify_track_cover_url' => null]
+                : $spotify->resolve($request->spotify_url))];
+        }
+
+        $universe->update($data);
 
         return response()->json($universe->fresh());
     }

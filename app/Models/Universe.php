@@ -9,7 +9,16 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'style', 'description', 'layout'])]
+#[Fillable([
+    'user_id',
+    'name',
+    'style',
+    'description',
+    'layout',
+    'spotify_track_id',
+    'spotify_track_title',
+    'spotify_track_cover_url',
+])]
 class Universe extends Model
 {
     use HasFactory;
