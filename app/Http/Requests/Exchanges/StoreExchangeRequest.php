@@ -4,6 +4,7 @@ namespace App\Http\Requests\Exchanges;
 
 use App\Enums\ItemStatus;
 use App\Enums\MatchStatus;
+use App\Enums\OfferType;
 use App\Models\Item;
 use App\Models\MatchModel;
 use App\Services\ExchangeService;
@@ -60,6 +61,17 @@ class StoreExchangeRequest extends FormRequest
 
             if ($requestedItem && $requestedItem->status !== ItemStatus::AVAILABLE) {
                 $validator->errors()->add('requested_item_id', 'This item is not available.');
+            }
+
+            if ($requestedItem
+                && $requestedItem->offer_type !== OfferType::BOTH
+                && $requestedItem->offer_type->value !== $this->type) {
+                $validator->errors()->add(
+                    'type',
+                    $requestedItem->offer_type === OfferType::GIFT
+                        ? 'This item is only offered as a gift.'
+                        : 'This item is only offered as a trade.'
+                );
             }
 
             if ($this->type === 'TRADE' && ! $offeredItem) {
