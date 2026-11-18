@@ -13,11 +13,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Passport\HasApiTokens;
 
 #[Fillable(['name', 'email', 'password', 'role', 'avatar'])]
 #[Hidden(['password', 'remember_token', 'avatar'])]
-#[Appends(['avatar_url'])]
+#[Appends(['avatar_url', 'handle'])]
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
@@ -39,6 +40,15 @@ class User extends Authenticatable
     protected function avatarUrl(): Attribute
     {
         return Attribute::get(fn () => $this->avatar ? Storage::disk('public')->url($this->avatar) : null);
+    }
+
+    protected function handle(): Attribute
+    {
+        return Attribute::get(function () {
+            $handle = Str::of((string) $this->name)->ascii()->lower()->replaceMatches('/[^a-z0-9]/', '')->toString();
+
+            return $handle !== '' ? $handle : null;
+        });
     }
 
     public function universe(): HasOne
