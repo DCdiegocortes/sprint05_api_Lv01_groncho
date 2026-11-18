@@ -9,6 +9,8 @@ use App\Models\User;
 
 class MatchService
 {
+    public function __construct(private ActivityNotifier $notifier) {}
+
     public function checkForMutualLike(User $swiper, User $target): ?MatchModel
     {
         $targetAlreadyLikedSwiper = Swipe::where('swiper_user_id', $target->id)
@@ -23,9 +25,15 @@ class MatchService
         $userOneId = min($swiper->id, $target->id);
         $userTwoId = max($swiper->id, $target->id);
 
-        return MatchModel::createOrFirst(
+        $match = MatchModel::createOrFirst(
             ['user_one_id' => $userOneId, 'user_two_id' => $userTwoId],
             ['status' => MatchStatus::ACTIVE],
         );
+
+        if ($match->wasRecentlyCreated) {
+            $this->notifier->matchCreated($match);
+        }
+
+        return $match;
     }
 }
