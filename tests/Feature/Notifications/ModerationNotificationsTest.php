@@ -57,7 +57,7 @@ class ModerationNotificationsTest extends TestCase
         $this->asUser($this->admin())->deleteJson("/api/universes/{$universe->id}/images/{$image->id}")->assertStatus(200);
 
         $this->assertEquals(
-            [['type' => 'UNIVERSE_PHOTO_REMOVED', 'universe_id' => $universe->id]],
+            [['type' => 'UNIVERSE_PHOTO_REMOVED', 'universe_id' => $universe->id, 'photos_removed' => 1]],
             $this->notificationsOf($owner)->all()
         );
     }
@@ -82,7 +82,7 @@ class ModerationNotificationsTest extends TestCase
         $this->asUser($this->admin())->deleteJson("/api/items/{$item->id}/images/{$image->id}")->assertStatus(200);
 
         $this->assertEquals(
-            [['type' => 'ITEM_PHOTO_REMOVED', 'item_id' => $item->id, 'item_name' => 'Melted chrome bag']],
+            [['type' => 'ITEM_PHOTO_REMOVED', 'item_id' => $item->id, 'item_name' => 'Melted chrome bag', 'photos_removed' => 1]],
             $this->notificationsOf($owner)->all()
         );
     }

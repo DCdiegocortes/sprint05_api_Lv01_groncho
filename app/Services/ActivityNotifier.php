@@ -50,7 +50,7 @@ class ActivityNotifier
         ]));
     }
 
-    public function universePhotoRemoved(Universe $universe, User $actor): void
+    public function universePhotoRemoved(Universe $universe, User $actor, int $count = 1): void
     {
         if ($actor->id === $universe->user_id) {
             return;
@@ -58,10 +58,11 @@ class ActivityNotifier
 
         $universe->user->notify(new ActivityNotification(NotificationType::UNIVERSE_PHOTO_REMOVED, [
             'universe_id' => $universe->id,
+            'photos_removed' => $count,
         ]));
     }
 
-    public function itemPhotoRemoved(Item $item, User $actor): void
+    public function itemPhotoRemoved(Item $item, User $actor, int $count = 1): void
     {
         if ($actor->id === $item->user_id) {
             return;
@@ -70,6 +71,7 @@ class ActivityNotifier
         $item->user->notify(new ActivityNotification(NotificationType::ITEM_PHOTO_REMOVED, [
             'item_id' => $item->id,
             'item_name' => $item->name,
+            'photos_removed' => $count,
         ]));
     }
 

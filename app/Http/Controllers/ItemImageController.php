@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Items\DestroyItemImagesRequest;
 use App\Http\Requests\Items\StoreItemImagesRequest;
 use App\Models\Item;
 use App\Models\ItemImage;
 use App\Services\ActivityNotifier;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
@@ -22,6 +24,26 @@ class ItemImageController extends Controller
         });
 
         return response()->json($images, 201);
+    }
+
+    public function destroyMany(DestroyItemImagesRequest $request, ActivityNotifier $notifier)
+    {
+        $images = ItemImage::with('item')->whereIn('id', $request->image_ids)->get();
+        $items = $images->pluck('item')->unique('id');
+
+        $items->each(fn (Item $item) => Gate::authorize('delete', $item));
+
+        DB::transaction(fn () => ItemImage::whereIn('id', $images->pluck('id'))->delete());
+
+        Storage::disk('public')->delete($images->pluck('path')->all());
+
+        $items->each(fn (Item $item) => $notifier->itemPhotoRemoved(
+            $item,
+            $request->user(),
+            $images->where('item_id', $item->id)->count()
+        ));
+
+        return response()->json(['message' => 'Images deleted'], 200);
     }
 
     public function destroy(Request $request, Item $item, ItemImage $image, ActivityNotifier $notifier)
