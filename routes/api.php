@@ -42,6 +42,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/items/ranking', [RankingController::class, 'items']);
 
     Route::delete('/items/images', [ItemImageController::class, 'destroyMany']);
+    Route::delete('/items', [ItemController::class, 'destroyMany']);
 
     Route::get('/items', [ItemController::class, 'index']);
     Route::get('/items/{item}', [ItemController::class, 'show']);

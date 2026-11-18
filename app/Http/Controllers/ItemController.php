@@ -6,13 +6,19 @@ use App\Enums\ItemCondition;
 use App\Enums\ItemStatus;
 use App\Enums\ItemType;
 use App\Enums\OfferType;
+use App\Http\Requests\Items\DestroyItemsRequest;
 use App\Http\Requests\Items\StoreItemRequest;
 use App\Http\Requests\Items\UpdateItemRequest;
 use App\Models\Exchange;
 use App\Models\Item;
+use App\Models\ItemImage;
+use App\Models\User;
 use App\Services\ActivityNotifier;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class ItemController extends Controller
 {
@@ -59,16 +65,38 @@ class ItemController extends Controller
     {
         Gate::authorize('delete', $item);
 
+        $this->remove(new Collection([$item]), $request->user(), $notifier);
+
+        return response()->json(['message' => 'Item deleted'], 200);
+    }
+
+    public function destroyMany(DestroyItemsRequest $request, ActivityNotifier $notifier)
+    {
+        $items = Item::whereIn('id', $request->item_ids)->get();
+
+        $items->each(fn (Item $item) => Gate::authorize('delete', $item));
+
+        $this->remove($items, $request->user(), $notifier);
+
+        return response()->json(['message' => 'Items deleted'], 200);
+    }
+
+    private function remove(Collection $items, User $actor, ActivityNotifier $notifier): void
+    {
+        $itemIds = $items->pluck('id');
+
         abort_if(
-            Exchange::where('requested_item_id', $item->id)->orWhere('offered_item_id', $item->id)->exists(),
+            Exchange::whereIn('requested_item_id', $itemIds)->orWhereIn('offered_item_id', $itemIds)->exists(),
             409,
             'Cannot delete an item that is part of an exchange.'
         );
 
-        $item->delete();
+        $photoPaths = ItemImage::whereIn('item_id', $itemIds)->pluck('path')->all();
 
-        $notifier->itemRemoved($item, $request->user());
+        DB::transaction(fn () => Item::whereIn('id', $itemIds)->delete());
 
-        return response()->json(['message' => 'Item deleted'], 200);
+        Storage::disk('public')->delete($photoPaths);
+
+        $items->each(fn (Item $item) => $notifier->itemRemoved($item, $actor));
     }
 }
