@@ -17,9 +17,10 @@ class ExchangeController extends Controller
     public function index(Request $request)
     {
         if ($request->user()->role === 'admin') {
-            $exchanges = Exchange::all();
+            $exchanges = Exchange::with($this->relations())->get();
         } else {
-            $exchanges = Exchange::where('requester_id', $request->user()->id)
+            $exchanges = Exchange::with($this->relations())
+                ->where('requester_id', $request->user()->id)
                 ->orWhereHas('requestedItem', function ($query) use ($request) {
                     $query->where('user_id', $request->user()->id);
                 })
@@ -30,14 +31,14 @@ class ExchangeController extends Controller
                 ->get();
         }
 
-        return response()->json($exchanges);
+        return response()->json($exchanges->each(fn (Exchange $exchange) => $this->present($exchange)));
     }
 
     public function show(Exchange $exchange)
     {
         Gate::authorize('view', $exchange);
 
-        return response()->json($exchange);
+        return response()->json($this->present($exchange->load($this->relations())));
     }
 
     public function store(StoreExchangeRequest $request)
@@ -84,5 +85,30 @@ class ExchangeController extends Controller
         $exchange->delete();
 
         return response()->json(['message' => 'Exchange cancelled'], 200);
+    }
+
+    private function relations(): array
+    {
+        return [
+            'requester:id,name',
+            'requestedItem:id,name,size',
+            'requestedItem.images',
+            'offeredItem:id,name,size',
+            'offeredItem.images',
+            'match.userOne:id,name',
+            'match.userTwo:id,name',
+        ];
+    }
+
+    private function present(Exchange $exchange): Exchange
+    {
+        $match = $exchange->match;
+
+        $exchange->setRelation(
+            'receiver',
+            $match->user_one_id === $exchange->requester_id ? $match->userTwo : $match->userOne
+        );
+
+        return $exchange->unsetRelation('match');
     }
 }
