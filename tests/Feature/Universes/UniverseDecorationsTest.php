@@ -81,11 +81,23 @@ class UniverseDecorationsTest extends TestCase
         }
     }
 
-    public function test_an_unknown_sticker_is_rejected(): void
+    public function test_any_sticker_name_is_accepted_because_the_list_lives_in_the_front(): void
     {
         [$user, $universe] = $this->ownUniverse();
 
-        foreach (['HEART', 'NO_MONEY', null] as $sticker) {
+        foreach (['MY_NEW_STICKER', 'HEART2', str_repeat('A', 30)] as $sticker) {
+            $response = $this->saveDecorations($user, $universe, [$this->sticker(['sticker' => $sticker])]);
+
+            $response->assertStatus(200);
+            $response->assertJsonPath('decorations.0.sticker', $sticker);
+        }
+    }
+
+    public function test_a_sticker_name_must_be_short_uppercase_letters_numbers_or_underscores(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        foreach ([null, '', 'ufo', 'GAME OVER', '<script>', '../UFO', str_repeat('A', 31)] as $sticker) {
             $response = $this->saveDecorations($user, $universe, [$this->sticker(['sticker' => $sticker])]);
 
             $response->assertStatus(422);
