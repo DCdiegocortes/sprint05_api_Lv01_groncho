@@ -36,9 +36,12 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('/universes/{universe}/images', [UniverseImageController::class, 'store']);
     Route::put('/universes/{universe}/images/order', [UniverseImageController::class, 'reorder']);
+    Route::delete('/universes/{universe}/images', [UniverseImageController::class, 'destroyMany']);
     Route::delete('/universes/{universe}/images/{image}', [UniverseImageController::class, 'destroy']);
 
     Route::get('/items/ranking', [RankingController::class, 'items']);
+
+    Route::delete('/items/images', [ItemImageController::class, 'destroyMany']);
 
     Route::get('/items', [ItemController::class, 'index']);
     Route::get('/items/{item}', [ItemController::class, 'show']);
@@ -73,5 +76,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::middleware('admin')->group(function () {
         Route::apiResource('users', UserController::class)->only(['index', 'show', 'destroy']);
+        Route::get('/users/{user}/items', [UserController::class, 'items']);
     });
 });

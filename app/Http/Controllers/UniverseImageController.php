@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Universes\DestroyUniverseImagesRequest;
 use App\Http\Requests\Universes\ReorderUniverseImagesRequest;
 use App\Http\Requests\Universes\StoreUniverseImagesRequest;
 use App\Models\Universe;
@@ -38,6 +39,19 @@ class UniverseImageController extends Controller
         });
 
         return response()->json($universe->images()->get());
+    }
+
+    public function destroyMany(DestroyUniverseImagesRequest $request, Universe $universe, ActivityNotifier $notifier)
+    {
+        $images = UniverseImage::where('universe_id', $universe->id)->whereIn('id', $request->image_ids)->get();
+
+        DB::transaction(fn () => UniverseImage::whereIn('id', $images->pluck('id'))->delete());
+
+        Storage::disk('public')->delete($images->pluck('path')->all());
+
+        $notifier->universePhotoRemoved($universe, $request->user(), $images->count());
+
+        return response()->json(['message' => 'Images deleted'], 200);
     }
 
     public function destroy(Request $request, Universe $universe, UniverseImage $image, ActivityNotifier $notifier)

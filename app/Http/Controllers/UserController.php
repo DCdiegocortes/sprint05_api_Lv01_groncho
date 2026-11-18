@@ -15,7 +15,12 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        return response()->json($user);
+        return response()->json($user->load('universe.images'));
+    }
+
+    public function items(User $user)
+    {
+        return response()->json(Item::with('images')->where('user_id', $user->id)->get());
     }
 
     public function destroy(User $user)
