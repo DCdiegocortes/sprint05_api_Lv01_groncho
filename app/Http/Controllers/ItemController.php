@@ -10,6 +10,7 @@ use App\Http\Requests\Items\StoreItemRequest;
 use App\Http\Requests\Items\UpdateItemRequest;
 use App\Models\Exchange;
 use App\Models\Item;
+use App\Services\ActivityNotifier;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
@@ -54,7 +55,7 @@ class ItemController extends Controller
         return response()->json($item->fresh());
     }
 
-    public function destroy(Item $item)
+    public function destroy(Request $request, Item $item, ActivityNotifier $notifier)
     {
         Gate::authorize('delete', $item);
 
@@ -65,6 +66,8 @@ class ItemController extends Controller
         );
 
         $item->delete();
+
+        $notifier->itemRemoved($item, $request->user());
 
         return response()->json(['message' => 'Item deleted'], 200);
     }

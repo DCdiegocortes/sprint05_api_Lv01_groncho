@@ -5,6 +5,7 @@ use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\MatchController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileAvatarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RankingController;
@@ -59,6 +60,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/exchanges', [ExchangeController::class, 'store']);
     Route::put('/exchanges/{exchange}', [ExchangeController::class, 'update']);
     Route::delete('/exchanges/{exchange}', [ExchangeController::class, 'destroy']);
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllAsRead']);
+    Route::patch('/notifications/{notification}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
 
     Route::get('/users/ranking', [RankingController::class, 'users']);
     Route::get('/users/ranking/best', [RankingController::class, 'usersBest']);
