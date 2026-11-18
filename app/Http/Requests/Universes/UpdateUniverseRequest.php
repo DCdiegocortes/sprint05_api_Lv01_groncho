@@ -15,7 +15,8 @@ class UpdateUniverseRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'style' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'style' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }
