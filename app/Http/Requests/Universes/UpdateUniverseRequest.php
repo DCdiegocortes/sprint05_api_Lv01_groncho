@@ -18,6 +18,8 @@ class UpdateUniverseRequest extends FormRequest
 
     private const MAX_TEXT_LENGTH = 100;
 
+    private const MAX_STICKER_NAME_LENGTH = 30;
+
     public function authorize(): bool
     {
         return $this->user()->can('update', $this->route('universe'));
@@ -40,6 +42,7 @@ class UpdateUniverseRequest extends FormRequest
             'spotify_url' => ['sometimes', 'nullable', 'string', 'regex:'.SpotifyTrackResolver::TRACK_LINK_PATTERN],
             'decorations' => ['sometimes', 'array', 'max:'.self::MAX_DECORATIONS],
             'decorations.*.type' => ['required', Rule::enum(DecorationType::class)],
+            'decorations.*.sticker' => ['exclude_unless:decorations.*.type,STICKER', 'required', 'string', 'max:'.self::MAX_STICKER_NAME_LENGTH, 'regex:/^[A-Z0-9_]+$/'],
             'decorations.*.emoji' => ['exclude_unless:decorations.*.type,EMOJI', 'required', new SingleEmoji],
             'decorations.*.text' => ['exclude_unless:decorations.*.type,TEXT', 'required', 'string', 'max:'.self::MAX_TEXT_LENGTH],
             'decorations.*.font' => ['exclude_unless:decorations.*.type,TEXT', 'required', Rule::enum(DecorationFont::class)],
