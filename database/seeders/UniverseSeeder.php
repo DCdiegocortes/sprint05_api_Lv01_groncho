@@ -9,11 +9,11 @@ use Illuminate\Database\Seeder;
 class UniverseSeeder extends Seeder
 {
     private const UNIVERSES = [
-        'ana@groncho.com' => ['Soft Minimal', 'minimal, neutral'],
-        'beto@groncho.com' => ['Street Vintage', 'streetwear, vintage'],
-        'carla@groncho.com' => ['Boho Garden', 'boho, floral'],
-        'dani@groncho.com' => ['Dark Academia', 'academia, tweed'],
-        'eli@groncho.com' => ['Sport Chic', 'sporty, urban'],
+        'ana@groncho.com' => ['Soft Minimal', 'MINIMAL, NEUTRAL'],
+        'beto@groncho.com' => ['Street Vintage', 'STREETWEAR, VINTAGE'],
+        'carla@groncho.com' => ['Boho Garden', 'BOHO, FLORAL'],
+        'dani@groncho.com' => ['Dark Academia', 'ACADEMIA, TWEED'],
+        'eli@groncho.com' => ['Sport Chic', 'SPORTY, URBAN'],
     ];
 
     public function run(): void
