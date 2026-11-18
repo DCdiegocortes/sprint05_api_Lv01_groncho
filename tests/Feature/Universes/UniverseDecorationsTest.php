@@ -76,6 +76,18 @@ class UniverseDecorationsTest extends TestCase
         $response->assertJsonPath('decorations.0.size', 8.25);
     }
 
+    public function test_positions_and_sizes_sent_as_text_are_saved_as_numbers(): void
+    {
+        [$user, $universe] = $this->ownUniverse();
+
+        $response = $this->saveDecorations($user, $universe, [$this->emoji(['x' => '70', 'y' => '1.5', 'size' => '12'])]);
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('decorations.0.x', 70);
+        $response->assertJsonPath('decorations.0.y', 1.5);
+        $response->assertJsonPath('decorations.0.size', 12);
+    }
+
     public function test_any_keyboard_emoji_is_accepted(): void
     {
         [$user, $universe] = $this->ownUniverse();
@@ -92,7 +104,7 @@ class UniverseDecorationsTest extends TestCase
     {
         [$user, $universe] = $this->ownUniverse();
 
-        foreach (['a', 'hello', '7', '🖤🖤', '🖤 ', ''] as $notAnEmoji) {
+        foreach (['a', 'hello', '7', '🖤🖤', '🖤a', ''] as $notAnEmoji) {
             $response = $this->saveDecorations($user, $universe, [$this->emoji(['emoji' => $notAnEmoji])]);
 
             $response->assertStatus(422);
