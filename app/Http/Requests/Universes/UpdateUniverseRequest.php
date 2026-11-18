@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests\Universes;
 
+use App\Enums\UniverseLayout;
 use App\Services\StyleNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUniverseRequest extends FormRequest
 {
@@ -25,6 +27,7 @@ class UpdateUniverseRequest extends FormRequest
             'name' => ['sometimes', 'string', 'max:255'],
             'style' => ['sometimes', 'nullable', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'layout' => ['sometimes', Rule::enum(UniverseLayout::class)],
         ];
     }
 }
