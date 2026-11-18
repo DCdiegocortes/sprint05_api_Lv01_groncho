@@ -95,6 +95,10 @@ class UniverseController extends Controller
                 : $spotify->resolve($request->spotify_url))];
         }
 
+        if ($request->has('decorations')) {
+            $data['decorations'] = $request->decorations();
+        }
+
         $universe->update($data);
 
         return response()->json($universe->fresh());
