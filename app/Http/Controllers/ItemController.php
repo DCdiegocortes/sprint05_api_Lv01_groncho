@@ -15,8 +15,8 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $items = $request->user()->role === 'admin'
-            ? Item::all()
-            : Item::where('user_id', $request->user()->id)->get();
+            ? Item::with('images')->get()
+            : Item::with('images')->where('user_id', $request->user()->id)->get();
 
         return response()->json($items);
     }
@@ -25,7 +25,7 @@ class ItemController extends Controller
     {
         Gate::authorize('view', $item);
 
-        return response()->json($item);
+        return response()->json($item->load('images'));
     }
 
     public function store(StoreItemRequest $request)
