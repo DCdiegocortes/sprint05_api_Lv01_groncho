@@ -17,13 +17,17 @@ class MatchController extends Controller
 
         $matches = MatchModel::where('user_one_id', $user->id)
             ->orWhere('user_two_id', $user->id)
-            ->with('userOne:id,name', 'userTwo:id,name')
+            ->with(
+                'userOne:id,name',
+                'userOne.universe:id,user_id,style',
+                'userTwo:id,name',
+                'userTwo.universe:id,user_id,style',
+            )
             ->get()
             ->each(function (MatchModel $match) use ($user) {
-                $match->setRelation(
-                    'partner',
-                    $match->user_one_id === $user->id ? $match->userTwo : $match->userOne
-                );
+                $partner = $match->user_one_id === $user->id ? $match->userTwo : $match->userOne;
+                $partner->universe?->makeHidden('user_id');
+                $match->setRelation('partner', $partner);
                 $match->unsetRelation('userOne')->unsetRelation('userTwo');
             });
 
