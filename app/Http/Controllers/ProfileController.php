@@ -14,7 +14,7 @@ class ProfileController extends Controller
 
     public function update(UpdateProfileRequest $request)
     {
-        $request->user()->update($request->only(['name', 'email']));
+        $request->user()->update($request->only(['name', 'email', 'password']));
 
         return response()->json($request->user()->fresh());
     }

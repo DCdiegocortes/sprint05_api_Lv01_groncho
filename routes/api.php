@@ -5,6 +5,7 @@ use App\Http\Controllers\ExchangeController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\ItemImageController;
 use App\Http\Controllers\MatchController;
+use App\Http\Controllers\ProfileAvatarController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RankingController;
 use App\Http\Controllers\SwipeController;
@@ -21,6 +22,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('/profile', [ProfileController::class, 'show']);
     Route::put('/profile', [ProfileController::class, 'update']);
+    Route::post('/profile/avatar', [ProfileAvatarController::class, 'store']);
+    Route::delete('/profile/avatar', [ProfileAvatarController::class, 'destroy']);
 
     Route::get('/universes', [UniverseController::class, 'index']);
     Route::get('/universes/feed', [UniverseController::class, 'feed']);
