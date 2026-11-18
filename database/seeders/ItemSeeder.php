@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use App\Enums\ItemStatus;
+use App\Enums\ItemType;
+use App\Enums\OfferType;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -35,6 +37,10 @@ class ItemSeeder extends Seeder
         ],
     ];
 
+    private const ACCESSORIES = ['Wool scarf', 'Straw hat', 'Leather backpack'];
+
+    private const OFFERED_AS_GIFT = ['Vintage denim jacket', 'Black ankle boots', 'Floral midi dress'];
+
     public function run(): void
     {
         foreach (self::ITEMS as $email => $items) {
@@ -47,6 +53,8 @@ class ItemSeeder extends Seeder
                         'user_id' => $user->id,
                         'description' => $description,
                         'size' => $size,
+                        'type' => in_array($name, self::ACCESSORIES, true) ? ItemType::ACCESSORIES : ItemType::CLOTHES,
+                        'offer_type' => in_array($name, self::OFFERED_AS_GIFT, true) ? OfferType::GIFT : OfferType::TRADE,
                         'status' => ItemStatus::AVAILABLE,
                     ]
                 );
