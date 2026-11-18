@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Universes;
 
 use App\Models\Universe;
+use App\Services\StyleNormalizer;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,11 +14,19 @@ class StoreUniverseRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->style)) {
+            $this->merge(['style' => app(StyleNormalizer::class)->normalize($this->style)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'name' => ['required', 'string', 'max:255'],
-            'style' => ['nullable', 'string', 'max:100'],
+            'style' => ['nullable', 'string', 'max:255'],
+            'description' => ['nullable', 'string', 'max:255'],
         ];
     }
 

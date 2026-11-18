@@ -25,6 +25,7 @@ class UniverseController extends Controller
             'user_id' => $request->user()->id,
             'name' => $request->name,
             'style' => $request->style,
+            'description' => $request->description,
         ]);
 
         return response()->json($universe, 201);
@@ -32,7 +33,7 @@ class UniverseController extends Controller
 
     public function update(UpdateUniverseRequest $request, Universe $universe)
     {
-        $universe->update($request->only(['name', 'style']));
+        $universe->update($request->only(['name', 'style', 'description']));
 
         return response()->json($universe->fresh());
     }

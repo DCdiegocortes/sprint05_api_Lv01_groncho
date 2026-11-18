@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Universes;
 
+use App\Services\StyleNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateUniverseRequest extends FormRequest
@@ -11,11 +12,19 @@ class UpdateUniverseRequest extends FormRequest
         return $this->user()->can('update', $this->route('universe'));
     }
 
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->style)) {
+            $this->merge(['style' => app(StyleNormalizer::class)->normalize($this->style)]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'style' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'style' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'description' => ['sometimes', 'nullable', 'string', 'max:255'],
         ];
     }
 }
