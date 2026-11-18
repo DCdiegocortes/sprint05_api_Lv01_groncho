@@ -13,9 +13,19 @@ class MatchController extends Controller
 {
     public function index(Request $request)
     {
-        $matches = MatchModel::where('user_one_id', $request->user()->id)
-            ->orWhere('user_two_id', $request->user()->id)
-            ->get();
+        $user = $request->user();
+
+        $matches = MatchModel::where('user_one_id', $user->id)
+            ->orWhere('user_two_id', $user->id)
+            ->with('userOne:id,name', 'userTwo:id,name')
+            ->get()
+            ->each(function (MatchModel $match) use ($user) {
+                $match->setRelation(
+                    'partner',
+                    $match->user_one_id === $user->id ? $match->userTwo : $match->userOne
+                );
+                $match->unsetRelation('userOne')->unsetRelation('userTwo');
+            });
 
         return response()->json($matches);
     }
