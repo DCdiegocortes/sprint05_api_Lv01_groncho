@@ -6,6 +6,8 @@ use App\Http\Requests\Universes\ReorderUniverseImagesRequest;
 use App\Http\Requests\Universes\StoreUniverseImagesRequest;
 use App\Models\Universe;
 use App\Models\UniverseImage;
+use App\Services\ActivityNotifier;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -38,7 +40,7 @@ class UniverseImageController extends Controller
         return response()->json($universe->images()->get());
     }
 
-    public function destroy(Universe $universe, UniverseImage $image)
+    public function destroy(Request $request, Universe $universe, UniverseImage $image, ActivityNotifier $notifier)
     {
         Gate::authorize('delete', $universe);
 
@@ -47,6 +49,8 @@ class UniverseImageController extends Controller
         Storage::disk('public')->delete($image->path);
 
         $image->delete();
+
+        $notifier->universePhotoRemoved($universe, $request->user());
 
         return response()->json(['message' => 'Image deleted'], 200);
     }

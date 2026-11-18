@@ -5,7 +5,9 @@ namespace App\Services;
 use App\Enums\ExchangeStatus;
 use App\Enums\NotificationType;
 use App\Models\Exchange;
+use App\Models\Item;
 use App\Models\MatchModel;
+use App\Models\Universe;
 use App\Models\User;
 use App\Notifications\ActivityNotification;
 
@@ -45,6 +47,40 @@ class ActivityNotifier
         $match->userTwo->notify(new ActivityNotification(NotificationType::MATCH_CREATED, [
             'actor_id' => $match->user_one_id,
             'match_id' => $match->id,
+        ]));
+    }
+
+    public function universePhotoRemoved(Universe $universe, User $actor): void
+    {
+        if ($actor->id === $universe->user_id) {
+            return;
+        }
+
+        $universe->user->notify(new ActivityNotification(NotificationType::UNIVERSE_PHOTO_REMOVED, [
+            'universe_id' => $universe->id,
+        ]));
+    }
+
+    public function itemPhotoRemoved(Item $item, User $actor): void
+    {
+        if ($actor->id === $item->user_id) {
+            return;
+        }
+
+        $item->user->notify(new ActivityNotification(NotificationType::ITEM_PHOTO_REMOVED, [
+            'item_id' => $item->id,
+            'item_name' => $item->name,
+        ]));
+    }
+
+    public function itemRemoved(Item $item, User $actor): void
+    {
+        if ($actor->id === $item->user_id) {
+            return;
+        }
+
+        $item->user->notify(new ActivityNotification(NotificationType::ITEM_REMOVED, [
+            'item_name' => $item->name,
         ]));
     }
 
