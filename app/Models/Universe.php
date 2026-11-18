@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'spotify_track_id',
     'spotify_track_title',
     'spotify_track_cover_url',
+    'decorations',
 ])]
 class Universe extends Model
 {
@@ -27,6 +28,7 @@ class Universe extends Model
     {
         return [
             'layout' => UniverseLayout::class,
+            'decorations' => 'array',
         ];
     }
 
