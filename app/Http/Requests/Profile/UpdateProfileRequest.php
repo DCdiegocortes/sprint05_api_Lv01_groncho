@@ -23,6 +23,8 @@ class UpdateProfileRequest extends FormRequest
                 'max:255',
                 Rule::unique('users', 'email')->ignore($this->user()->id),
             ],
+            'current_password' => ['required_with:password', 'current_password:api'],
+            'password' => ['sometimes', 'string', 'min:8', 'confirmed'],
         ];
     }
 }
