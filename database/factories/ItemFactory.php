@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Enums\ItemStatus;
+use App\Enums\OfferType;
 use App\Models\Item;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -24,6 +25,7 @@ class ItemFactory extends Factory
             'name' => $this->faker->words(2, true),
             'description' => $this->faker->sentence(),
             'size' => $this->faker->randomElement(['XS', 'S', 'M', 'L', 'XL']),
+            'offer_type' => OfferType::BOTH,
             'status' => ItemStatus::AVAILABLE,
         ];
     }

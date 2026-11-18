@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ItemCondition;
 use App\Enums\ItemStatus;
+use App\Enums\ItemType;
+use App\Enums\OfferType;
 use App\Http\Requests\Items\StoreItemRequest;
 use App\Http\Requests\Items\UpdateItemRequest;
 use App\Models\Exchange;
@@ -35,6 +38,9 @@ class ItemController extends Controller
             'name' => $request->name,
             'description' => $request->description,
             'size' => $request->size,
+            'item_condition' => $request->input('item_condition', ItemCondition::GOOD->value),
+            'type' => $request->input('type', ItemType::CLOTHES->value),
+            'offer_type' => $request->input('offer_type', OfferType::TRADE->value),
             'status' => ItemStatus::AVAILABLE,
         ]);
 
@@ -43,7 +49,7 @@ class ItemController extends Controller
 
     public function update(UpdateItemRequest $request, Item $item)
     {
-        $item->update($request->only(['name', 'description', 'size']));
+        $item->update($request->only(['name', 'description', 'size', 'item_condition', 'type', 'offer_type']));
 
         return response()->json($item->fresh());
     }
