@@ -10,11 +10,18 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['universe_id', 'path'])]
+#[Fillable(['universe_id', 'path', 'position'])]
 #[Appends(['url'])]
 class UniverseImage extends Model
 {
     use HasFactory;
+
+    protected function casts(): array
+    {
+        return [
+            'position' => 'integer',
+        ];
+    }
 
     protected function url(): Attribute
     {

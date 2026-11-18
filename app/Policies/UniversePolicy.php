@@ -21,4 +21,9 @@ class UniversePolicy
     {
         return $user->id === $universe->user_id;
     }
+
+    public function reorderImages(User $user, Universe $universe): bool
+    {
+        return $user->id === $universe->user_id;
+    }
 }
