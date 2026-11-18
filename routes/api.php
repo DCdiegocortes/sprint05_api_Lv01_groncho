@@ -31,6 +31,7 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('/universes/{universe}', [UniverseController::class, 'destroy']);
 
     Route::post('/universes/{universe}/images', [UniverseImageController::class, 'store']);
+    Route::put('/universes/{universe}/images/order', [UniverseImageController::class, 'reorder']);
     Route::delete('/universes/{universe}/images/{image}', [UniverseImageController::class, 'destroy']);
 
     Route::get('/items/ranking', [RankingController::class, 'items']);

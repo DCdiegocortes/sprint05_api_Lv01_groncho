@@ -37,6 +37,6 @@ class Universe extends Model
 
     public function images(): HasMany
     {
-        return $this->hasMany(UniverseImage::class);
+        return $this->hasMany(UniverseImage::class)->orderBy('position');
     }
 }
