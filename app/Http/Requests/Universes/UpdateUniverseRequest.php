@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Universes;
 
 use App\Enums\UniverseLayout;
+use App\Services\SpotifyTrackResolver;
 use App\Services\StyleNormalizer;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -28,6 +29,7 @@ class UpdateUniverseRequest extends FormRequest
             'style' => ['sometimes', 'nullable', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string', 'max:255'],
             'layout' => ['sometimes', Rule::enum(UniverseLayout::class)],
+            'spotify_url' => ['sometimes', 'nullable', 'string', 'regex:'.SpotifyTrackResolver::TRACK_LINK_PATTERN],
         ];
     }
 }
