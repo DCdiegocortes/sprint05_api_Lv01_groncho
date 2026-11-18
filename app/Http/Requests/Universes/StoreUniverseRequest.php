@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Universes;
 
 use App\Models\Universe;
+use App\Services\StyleNormalizer;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -11,6 +12,13 @@ class StoreUniverseRequest extends FormRequest
     public function authorize(): bool
     {
         return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->style)) {
+            $this->merge(['style' => app(StyleNormalizer::class)->normalize($this->style)]);
+        }
     }
 
     public function rules(): array
