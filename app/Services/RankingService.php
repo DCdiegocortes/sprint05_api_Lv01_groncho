@@ -13,7 +13,7 @@ class RankingService
     {
         return Exchange::selectRaw('requester_id, count(*) as total, sum(case when status = ? then 1 else 0 end) as finished', [ExchangeStatus::FINISHED->value])
             ->groupBy('requester_id')
-            ->with('requester')
+            ->with('requester:id,name,avatar')
             ->get()
             ->map(fn ($row) => [
                 'user' => $row->requester,
