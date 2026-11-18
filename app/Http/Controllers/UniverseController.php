@@ -2,8 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\ExchangeStatus;
+use App\Enums\MatchStatus;
 use App\Http\Requests\Universes\StoreUniverseRequest;
 use App\Http\Requests\Universes\UpdateUniverseRequest;
+use App\Models\Exchange;
+use App\Models\Item;
+use App\Models\MatchModel;
 use App\Models\Swipe;
 use App\Models\Universe;
 use Illuminate\Http\Request;
@@ -38,6 +43,26 @@ class UniverseController extends Controller
             ->get();
 
         return response()->json($universes);
+    }
+
+    public function mine(Request $request)
+    {
+        $user = $request->user();
+        $universe = $user->universe()->with('images')->firstOrFail();
+
+        $involvesUser = fn ($query) => $query->where('user_one_id', $user->id)->orWhere('user_two_id', $user->id);
+
+        return response()->json([
+            ...$universe->toArray(),
+            'counts' => [
+                'pieces' => Item::where('user_id', $user->id)->count(),
+                'matches' => MatchModel::where('status', MatchStatus::ACTIVE)->where($involvesUser)->count(),
+                'requests' => Exchange::where('status', ExchangeStatus::PENDING)
+                    ->where('requester_id', '!=', $user->id)
+                    ->whereHas('match', $involvesUser)
+                    ->count(),
+            ],
+        ]);
     }
 
     public function show(Universe $universe)
