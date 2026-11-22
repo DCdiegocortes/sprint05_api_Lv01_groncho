@@ -92,6 +92,20 @@ class UniverseImageOrderTest extends TestCase
         $response->assertJsonPath('0.images.1.id', $images[0]->id);
     }
 
+    public function test_viewing_a_universe_shows_its_photos_in_their_order(): void
+    {
+        [, $universe, $images] = $this->universeWithImages(2);
+        $images[0]->update(['position' => 2]);
+        $images[1]->update(['position' => 1]);
+
+        $response = $this->asUser(User::factory()->create())->getJson("/api/universes/{$universe->id}");
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('images.0.id', $images[1]->id);
+        $response->assertJsonPath('images.1.id', $images[0]->id);
+        $response->assertJsonPath('images.0.url', Storage::disk('public')->url($images[1]->path));
+    }
+
     public function test_new_photos_are_added_at_the_end(): void
     {
         [$owner, $universe] = $this->universeWithImages(2);
