@@ -69,7 +69,7 @@ class UniverseController extends Controller
 
     public function show(Universe $universe)
     {
-        return response()->json($universe);
+        return response()->json($universe->load('images'));
     }
 
     public function store(StoreUniverseRequest $request)
