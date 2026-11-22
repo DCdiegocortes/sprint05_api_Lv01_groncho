@@ -4,9 +4,11 @@ namespace Tests\Feature\Rankings;
 
 use App\Models\Exchange;
 use App\Models\Item;
+use App\Models\ItemImage;
 use App\Models\MatchModel;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Laravel\Passport\ClientRepository;
 use Tests\TestCase;
 
@@ -67,6 +69,21 @@ class ItemRankingTest extends TestCase
         $this->assertEquals(2, $data[0]['request_count']);
         $this->assertEquals($lessPopularItem->id, $data[1]['item']['id']);
         $this->assertEquals(1, $data[1]['request_count']);
+    }
+
+    public function test_items_ranking_shows_the_photos_of_each_piece(): void
+    {
+        $viewer = User::factory()->create();
+        $item = Item::factory()->create();
+        $image = ItemImage::factory()->create(['item_id' => $item->id]);
+        $this->requestItem($item);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->tokenFor($viewer))
+            ->getJson('/api/items/ranking');
+
+        $response->assertStatus(200);
+        $response->assertJsonPath('0.item.images.0.id', $image->id);
+        $response->assertJsonPath('0.item.images.0.url', Storage::disk('public')->url($image->path));
     }
 
     public function test_items_never_requested_are_excluded_from_ranking(): void

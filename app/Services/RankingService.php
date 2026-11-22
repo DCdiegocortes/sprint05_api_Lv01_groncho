@@ -27,7 +27,7 @@ class RankingService
     {
         return Exchange::selectRaw('requested_item_id, count(*) as request_count')
             ->groupBy('requested_item_id')
-            ->with('requestedItem')
+            ->with('requestedItem.images')
             ->get()
             ->map(fn ($row) => [
                 'item' => $row->requestedItem,
